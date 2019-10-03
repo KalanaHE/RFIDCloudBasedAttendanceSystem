@@ -8,6 +8,8 @@
 //LCD SCL -> D1
 //LCD SDA -> D2
 
+
+
 #include<SoftwareSerial.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
@@ -158,11 +160,11 @@ void loop(){
     client.print(" ");      //SPACE BEFORE HTTP/1.1
     client.print("HTTP/1.1");
     client.print("Host: ");
-     client.println(server);
+    client.println(server);
     client.println("Host: YOUR SERVER IP");//eg: 192.168.0.222
     client.println("Connection: close");
     client.println();
-  } else {
+  }else{
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
