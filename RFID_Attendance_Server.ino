@@ -8,6 +8,9 @@
 //LCD SCL -> D1
 //LCD SDA -> D2
 
+//GREENLED -> D3
+//REDLED -> D8
+
 
 
 #include<SoftwareSerial.h>
@@ -21,13 +24,15 @@
 #include <MFRC522.h>
 
 const char* ssid = "Will the wise";// 
-const char* password = "Tangojuliet";
+const char* password = "Tangojuliet1996";
 //WiFiClient client;
 char server[] = "192.168.8.1";   //eg: 192.168.0.222
 #define SS_PIN 2 //FOR RFID SS PIN BECASUSE WE ARE USING BOTH ETHERNET SHIELD AND RS-522
 #define RST_PIN 15
 #define No_Of_Card 3
-#define BUZZER D0 
+#define BUZZER D0
+#define GREENLIGHT D3 
+#define REDLIGHT D8
 
 WiFiClient client;
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -49,6 +54,11 @@ void setup(){
   lcd.begin();
   lcd.home();
   pinMode(BUZZER, OUTPUT);
+  pinMode(GREENLIGHT, OUTPUT);
+  pinMode(REDLIGHT, OUTPUT);
+
+  digitalWrite(GREENLIGHT,LOW);
+  digitalWrite(REDLIGHT,LOW);
   
   Serial.begin(115200);
   delay(10);
@@ -108,6 +118,7 @@ void loop(){
                   Serial.println("\nVALID");
                   //digitalWrite(BUZZER, HIGH);
                   tone(BUZZER,HIGH,1000);
+                  tone(GREENLIGHT,HIGH,1000);
                   lcd.clear();
                   lcd.print("Hello, Calculus!");
                   Sending_To_DB();
@@ -122,6 +133,7 @@ void loop(){
             if(j==No_Of_Card){
               Serial.println("inVALID");
               tone(BUZZER,100,1000);
+              tone(REDLIGHT,HIGH,1000);
               lcd.clear();
               lcd.print("Invalid ID!");
               Sending_To_DB();
