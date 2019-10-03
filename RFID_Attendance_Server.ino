@@ -1,3 +1,13 @@
+//SDA -> D4
+//SCK -> D5
+//MOSI -> D7
+//MISO -> D6
+
+//BUZZER -> D0
+
+//LCD SCL -> D1
+//LCD SDA -> D2
+
 #include<SoftwareSerial.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
