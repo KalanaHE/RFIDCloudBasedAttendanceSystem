@@ -26,7 +26,7 @@
 const char* ssid = "Will the wise";// 
 const char* password = "Tangojuliet1996";
 //WiFiClient client;
-char server[] = "192.168.8.1";   //eg: 192.168.0.222
+char server[] = "35.244.50.5";   //eg: 192.168.0.222
 #define SS_PIN 2 //FOR RFID SS PIN BECASUSE WE ARE USING BOTH ETHERNET SHIELD AND RS-522
 #define RST_PIN 15
 #define No_Of_Card 3
@@ -77,13 +77,14 @@ void setup(){
   Serial.println(ssid);
  
   WiFi.begin(ssid, password);
- 
+  //lcd.print("System Booting");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
   Serial.println("");
   Serial.println("WiFi connected");
+  //lcd.clear();
  
   // Start the server
 //  server.begin();
@@ -154,28 +155,26 @@ void loop(){
    if (client.connect(server, 80)){
     Serial.println("connected");
     // Make a HTTP request:
-    Serial.println("GET /rfid/rfid_read.php?allow=");     //YOUR URL /rfid/rfid_read.php?allow
-    client.print("GET /rfid/nodemcu_rfid/rfid_read.php?allow=");     //YOUR URL /rfid/rfid_read.php?allow  /var/www/html/rfid/rfid_read.php
+    String url = "/RFIDSystem/get.php?";
     if(j!=No_Of_Card){
       Serial.println('1');
-      client.print('1');
+      url+= "allow=1";
     }else{
       Serial.println('0');
-      client.print('0');
+      url+= "allow=0";
     }
     Serial.println("&id=");
-    client.print("&id=");
+    url+= "&id=";
     for(int s=0;s<4;s++){
         Serial.println(rfid.uid.uidByte[s]);
-        client.print(rfid.uid.uidByte[s]);
+        url+= (rfid.uid.uidByte[s]);
     }
-    client.print(" ");      //SPACE BEFORE HTTP/1.1
-    client.print("HTTP/1.1");
-    client.print("Host: ");
-    client.println(server);
-    client.println("Host: YOUR SERVER IP");//eg: 192.168.0.222
-    client.println("Connection: close");
-    client.println();
+
+    // This will send the request to the server
+    client.print(String("GET ") + url + " HTTP/1.1\r\n" +
+                 "Host: " + server + "\r\n" + 
+                 "Connection: close\r\n\r\n");    
+    
   }else{
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
