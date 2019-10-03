@@ -15,11 +15,10 @@ char server[] = "192.168.8.1";   //eg: 192.168.0.222
 #define SS_PIN 2 //FOR RFID SS PIN BECASUSE WE ARE USING BOTH ETHERNET SHIELD AND RS-522
 #define RST_PIN 15
 #define No_Of_Card 3
+#define LED D0 
 
-int p,q;
-
- WiFiClient client;
- LiquidCrystal_I2C lcd(0x27, 16, 2);
+WiFiClient client;
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 //WiFiServer server(80);
 SoftwareSerial mySerial(8,9);     
@@ -37,6 +36,7 @@ void setup(){
   Wire.begin(D2, D1);
   lcd.begin();
   lcd.home();
+  pinMode(LED, OUTPUT);
   
   Serial.begin(115200);
   delay(10);
@@ -44,8 +44,7 @@ void setup(){
   SPI.begin();
   rfid.PCD_Init();
 
-    for(byte i=0;i<6;i++)
-  {
+    for(byte i=0;i<6;i++){
     key.keyByte[i]=0xFF;
   }
 
@@ -71,8 +70,8 @@ void setup(){
   delay(1000);
   Serial.println("connecting...");
  }
-void loop()
-{  // Check if a client has connected
+void loop(){  
+  // Check if a client has connected
   int m=0;
   if(!rfid.PICC_IsNewCardPresent())
   return;
@@ -95,6 +94,8 @@ void loop()
                    
                   }
                   Serial.println("\nVALID");
+                  //digitalWrite(LED, HIGH);
+                  tone(LED,HIGH,1000);
                   lcd.clear();
                   lcd.print("Hello, Calculus!");
                   Sending_To_DB();
@@ -104,51 +105,46 @@ void loop()
                 }
               }
             }
+          }else{
+            j++;
+            if(j==No_Of_Card){
+              Serial.println("inVALID");
+              tone(LED,100,1000);
+              lcd.clear();
+              lcd.print("Invalid ID!");
+              Sending_To_DB();
+              j=0;
+            }
+           }
           }
-   else{
-    j++;
-    if(j==No_Of_Card){
-      Serial.println("inVALID");
-      lcd.clear();
-      lcd.print("Invalid ID!");
-      Sending_To_DB();
-      j=0;
-    }
-   }
-  }
   
-     // Halt PICC
+  // Halt PICC
   rfid.PICC_HaltA();
 
   // Stop encryption on PCD
   rfid.PCD_StopCrypto1();
  }
 
- void Sending_To_DB()   //CONNECTING WITH MYSQL
- {
-   if (client.connect(server, 80)) {
+ void Sending_To_DB(){
+  //CONNECTING WITH MYSQL
+   if (client.connect(server, 80)){
     Serial.println("connected");
     // Make a HTTP request:
     Serial.println("GET /rfid/rfid_read.php?allow=");     //YOUR URL /rfid/rfid_read.php?allow
     client.print("GET /rfid/nodemcu_rfid/rfid_read.php?allow=");     //YOUR URL /rfid/rfid_read.php?allow  /var/www/html/rfid/rfid_read.php
-    if(j!=No_Of_Card)
-    {
+    if(j!=No_Of_Card){
       Serial.println('1');
       client.print('1');
-    }
-    else
-    {
+    }else{
       Serial.println('0');
       client.print('0');
     }
     Serial.println("&id=");
     client.print("&id=");
-    for(int s=0;s<4;s++)
-                  {
-                    Serial.println(rfid.uid.uidByte[s]);
-                    client.print(rfid.uid.uidByte[s]);
-                                  
-                  }
+    for(int s=0;s<4;s++){
+        Serial.println(rfid.uid.uidByte[s]);
+        client.print(rfid.uid.uidByte[s]);
+    }
     client.print(" ");      //SPACE BEFORE HTTP/1.1
     client.print("HTTP/1.1");
     client.print("Host: ");
