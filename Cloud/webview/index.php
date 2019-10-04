@@ -20,6 +20,8 @@
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
 
+  <link rel="shortcut icon" href="../../myweb/images/favicon.ico">
+
 </head>
 
 <body id="page-top">
