@@ -84,7 +84,7 @@
         <!-- DataTables Example -->
         <div class="card mb-3">
           <div class="card-header">
-            Report 
+            Report  
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -128,9 +128,35 @@
               </table>
             </div>
           </div>
+
+          <?php 
+                
+                $sql = "SELECT * FROM user_attendance ORDER BY id DESC LIMIT 1 ";  
+                $res = $conn->query($sql);
+                while($row1 = $res->fetch_assoc()) {
+                  $lastupdate = $row1["timestamp"];
+                }
+
+           ?>
           
 
-          <div class="card-footer small text-muted">Last updated at <?php echo '<font color="green">Just now.</font>'; ?></div>
+          <div class="card-footer small text-muted">Last updated at <?php echo $lastupdate; ?></div>
         </div>
 
 
+<!-- <script>
+    $(document).ready(function () {
+        var table = $('#dataTable').DataTable({
+            "paging": false,
+            "processing": true,
+            "serverSide": true,
+            'serverMethod': 'post',
+            "ajax": "server.php",
+            dom: 'Bfrtip',
+            buttons: [
+                {extend: 'copy', attr: {id: 'allan'}}, 'csv', 'excel', 'pdf'
+            ]
+        });
+
+    });
+</script> -->
