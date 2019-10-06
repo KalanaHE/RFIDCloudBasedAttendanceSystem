@@ -1,3 +1,15 @@
+<?php
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(isset($_SESSION["login_user"]) !== true){
+    header("location: ../");
+    exit;
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,8 +40,20 @@
 
   <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-    <a class="navbar-brand mr-1" href="#">CalculusWebS</a>
+    <a class="navbar-brand mr-1" href="#">CalculusWebS</a> 
 
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Welcome: <?php echo $_SESSION['login_user']; ?></a>
+            </li>
+            <li class="nav-item">
+               <a href="sessiondestroy.php">
+                  <button type="button" class="btn btn-secondary"><i class="fa fa-lock"></i> Logout</button>
+               </a>
+            </li>
+        </ul>
+    </div>
 
 
 
@@ -154,6 +178,12 @@
 
 
     
+</script>
+
+<script type="text/javascript">
+  function logout(){
+
+  }
 </script>
 
 </body>
