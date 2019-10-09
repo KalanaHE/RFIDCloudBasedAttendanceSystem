@@ -1,8 +1,8 @@
 <?php 
 
 		$servername = "localhost";
-		$username = "root";
-		$password = "Tangojuliet1996";
+		$username = "MySQL username";
+		$password = "Your MYSQL Password";
 	    $dbname = "attendanceSysDB";
 
 		// Create connection
